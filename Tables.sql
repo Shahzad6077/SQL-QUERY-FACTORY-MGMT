@@ -63,3 +63,40 @@ CREATE TABLE BALANCE_WITHDRAW
 ) 
 
 
+---------------------STOCK SECTION -------------------------
+
+
+create table STOCK
+(
+	itemId int identity(1,1),
+	itemName varchar(30) ,
+	qty float ,
+	unit varchar(10),
+	pricePerUnit FLOAT,
+	active bit default 1,
+	Constraint STOCK_pk Primary key (itemId),
+	Constraint STOCK_ChkQty Check(qty >0),
+	Constraint STOCK_ChkPrice Check(pricePerUnit > 0)
+)
+
+	
+
+create table PURCHASE_STOCK
+(
+	itemId int,
+	createdTime time default convert(time, getDate()),
+	createdDate date default convert(date, getDate()),
+	qty float,
+	pricePerUnit FLOAT ,
+	purchaseFrom varchar(30) default 'Not Provided',
+	address varchar(50) default 'Not Provided',
+	phoneNo varchar(30) default 'Not Provided',
+	comment varchar(100) default '',
+	Constraint PURCHASE_STOCK_pk Primary key (itemId,createdTime,createdDate) ,
+	Constraint STOCK_fk foreign key (itemId) references WORKER(itemId) on update cascade ,
+	Constraint PURCHASE_STOCK_ChkQty Check(qty >0),
+	Constraint PURCHASE_STOCK_ChkPrice Check(PpricePerUnit > 0),
+)
+
+
+

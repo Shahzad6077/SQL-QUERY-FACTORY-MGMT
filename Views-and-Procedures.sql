@@ -18,6 +18,9 @@ Exec addWorker 'Mesum Ali','09123','p123 LHR'
 ------------------------------------------------------
 
 -----------------UPDATE WORKER (DETAILS) PROCEDURE -------------
+
+
+
 CREATE PROCEDURE updateWorker @id int, @name  varchar(50),@PhoneNo varChar(20),@Address varchar(50)
 AS
 update WORKER
@@ -52,11 +55,13 @@ EXEC changeStatusWorker 29,0
 CREATE PROCEDURE addWorkDone @wID  int, @payment int, @detail  varChar(50)
 AS
 INSERT INTO WORK_DONE (WID,Daily_Payment,detail)
-VALUES (@wID,@payment,@detail) 
+VALUES (@wID,@payment,@detail) ;
 ------------------------------------------------------
 
 
 ----------------ADD BALANCE_WITHDRAW PROCEDURE---------------
+
+
 
 CREATE PROCEDURE newWithdraw @wID  int, @amount int
 AS
@@ -82,3 +87,67 @@ where W.Status = 'Active'
 
 
 */
+
+
+
+---------------------------- STOCK SECTION ------------------------
+-------------- NEW STOCK ENTERED ----------
+
+---- THIS IS FOR WHEN RECORD IS NOT CREATED BEFORE -----
+/*
+	ye procedure Purchase waly panel par chaly ga jb hum ny new Stock buy kia or add krna hoga 
+	this will automatically create a purchasing record or add the record in STOCK table 
+
+*/
+CREATE PROCEDURE newStock @NAME VARCHAR(30),@QTY FLOAT, @UNIT VARCHAR(10),@PRICE FLOAT,
+				@buyfrom varchar(30),@adress varchar(50),@phone varchar(30),@comment varchar(100)
+as
+ISNERT INTO STOCK (itemName,qty,unit,pricePerUnit)
+values (@NAME,@QTY,@UNIT,@PRICE)
+declare @idOrig int;
+select @idOrig=  IDENT_CURRENT( 'STOCK' );
+insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,address,phoneNo,comment)
+values (@idOrig,@QTY,@PRICE,@buyfrom,@adress,@phone,@comment)
+
+-----------------------------------------------
+---- THIS IS FOR WHEN RECORD IS ALREADY CREATED BEFORE -----
+/*
+	ye procedure Stock waly panel par chaly ga 
+	jb hum ny koi existing stock Item ko select kia or hum ny us ki qty update ki 
+	yaha par 2 case ho sakty hain k ab wohi item kici or company sy buy ki ho ic liye jb b kici b 
+	stock ki item ko update kry gy to company ki details must hai 
+	ye Stock ki qty ko update b kr dy ga or purchase wly table mai jaa kr humry pas record b rah jay ga 
+
+*/
+create procedure newStockWithUpdate @id int,@NAME VARCHAR(30),@QTY FLOAT, @UNIT VARCHAR(10),@PRICE FLOAT,
+				@buyfrom varchar(30),@adress varchar(50),@phone varchar(30),@comment varchar(100)
+as
+update STOCK
+set qty= qty+@QTY,pricePerUnit=@PRICE
+where itemId= @id
+
+insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,address,phoneNo,comment)
+values (@id,@QTY,@PRICE,@buyfrom,@adress,@phone,@comment)
+
+-----------------------------------------------------
+
+---- DELETE THE STOCK -----
+/*
+	YAHA PAr active ki value ko 0 kr dain gy kyun k humy still previous record chaye hai 
+	stock items ka in-case koi stock item remove krni pari to uski wja sy jo previous record tha purchase table mai
+	wo b del hojay ga so hum ny kia k acitve ko 0 kr dia 
+*/
+create procedure removeStock @id 
+as
+update STOCK
+set active= 0
+where itemId= @id
+
+---- update NAME OF STOCK ITEM-----
+/*
+*/
+create procedure updateStockItemName @id int,@name varchar(30)
+as
+update STOCK
+set itemName= @name
+where itemId= @id
