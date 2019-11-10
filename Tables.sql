@@ -18,6 +18,7 @@ CREATE TABLE WORKER
 	Constraint WORKER_pk PRIMARY KEY (WID),
 	CONSTRAINT CHK_Balance CHECK (Balance>=0)
 )
+Select * from WORKER
 
 
 --- QUERY FOR ALTER TABLE AFTER CREATATION --------
@@ -89,13 +90,13 @@ create table PURCHASE_STOCK
 	qty float,
 	pricePerUnit FLOAT ,
 	purchaseFrom varchar(30) default 'Not Provided',
-	address varchar(50) default 'Not Provided',
+	pAddress varchar(50) default 'Not Provided',
 	phoneNo varchar(30) default 'Not Provided',
 	comment varchar(100) default '',
 	Constraint PURCHASE_STOCK_pk Primary key (itemId,createdTime,createdDate) ,
-	Constraint STOCK_fk foreign key (itemId) references WORKER(itemId) on update cascade ,
+	Constraint STOCK_fk foreign key (itemId) references STOCK(itemId) on update cascade ,
 	Constraint PURCHASE_STOCK_ChkQty Check(qty >0),
-	Constraint PURCHASE_STOCK_ChkPrice Check(PpricePerUnit > 0),
+	Constraint PURCHASE_STOCK_ChkPrice Check(pricePerUnit > 0),
 )
 
 

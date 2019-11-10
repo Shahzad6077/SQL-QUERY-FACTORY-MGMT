@@ -102,11 +102,11 @@ where W.Status = 'Active'
 CREATE PROCEDURE newStock @NAME VARCHAR(30),@QTY FLOAT, @UNIT VARCHAR(10),@PRICE FLOAT,
 				@buyfrom varchar(30),@adress varchar(50),@phone varchar(30),@comment varchar(100)
 as
-ISNERT INTO STOCK (itemName,qty,unit,pricePerUnit)
+INSERT INTO STOCK (itemName,qty,unit,pricePerUnit)
 values (@NAME,@QTY,@UNIT,@PRICE)
 declare @idOrig int;
 select @idOrig=  IDENT_CURRENT( 'STOCK' );
-insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,address,phoneNo,comment)
+insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,pAddress,phoneNo,comment)
 values (@idOrig,@QTY,@PRICE,@buyfrom,@adress,@phone,@comment)
 
 -----------------------------------------------
@@ -126,7 +126,7 @@ update STOCK
 set qty= qty+@QTY,pricePerUnit=@PRICE
 where itemId= @id
 
-insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,address,phoneNo,comment)
+insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,pAddress,phoneNo,comment)
 values (@id,@QTY,@PRICE,@buyfrom,@adress,@phone,@comment)
 
 -----------------------------------------------------
@@ -137,7 +137,7 @@ values (@id,@QTY,@PRICE,@buyfrom,@adress,@phone,@comment)
 	stock items ka in-case koi stock item remove krni pari to uski wja sy jo previous record tha purchase table mai
 	wo b del hojay ga so hum ny kia k acitve ko 0 kr dia 
 */
-create procedure removeStock @id 
+create procedure removeStock @id int 
 as
 update STOCK
 set active= 0
