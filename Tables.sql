@@ -10,8 +10,9 @@ CREATE TABLE WORKER
 	WorkerName varchar(50) Not Null,
 	Balance int default 0 not Null,
 	PhoneNo varChar(20) Null,
+	cnic int not null,
 	--ShiftPeriod varChar(20) DEFAULT NULL,
-	Address varchar(50) Default Null,
+	Adress varchar(50) Default Null,
 	Status bit default 1,
 	createdTime varchar(30) default CONVERT(varchar(15),  CAST(GETDATE() AS TIME), 100),
 	createdDate date default convert(date, getDate()),
@@ -20,7 +21,6 @@ CREATE TABLE WORKER
 )
 Select * from WORKER
 
-
 --- QUERY FOR ALTER TABLE AFTER CREATATION --------
 /*
 ALTER TABLE WORKER
@@ -28,10 +28,6 @@ ADD Balance int default 0 not null;
 --QUERY FOR REMOVE ROWS FROM A TABLE (USE WHERE TO REMOVE SPECIFIC ROWS) ------------
 DELETE FROM WORKER
 */
-
-
-
-
 
 ---------------------------------------------------------------
 ---------------------- WORK_DONE SECTION ----------------------

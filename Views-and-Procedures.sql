@@ -9,12 +9,11 @@ From WORKERS_VIEW
 
 -------------ADD WORKER PROCEDURE -------------
 
-CREATE PROCEDURE addWorker @name  varChar(50), @phone varchar(20) , @address  varChar(50)
+CREATE PROCEDURE addWorker @name  varChar(50), @phone varchar(20),@cnic int, @address  varChar(50)
 AS
-INSERT INTO WORKER (WorkerName,PhoneNo,Address)
-VALUES (@name,@phone,@address) 
+INSERT INTO WORKER (WorkerName,PhoneNo,cnic,Adress)
+VALUES (@name,@phone,@cnic,@address) 
 
-Exec addWorker 'Mesum Ali','09123','p123 LHR'
 ------------------------------------------------------
 
 -----------------UPDATE WORKER (DETAILS) PROCEDURE -------------
