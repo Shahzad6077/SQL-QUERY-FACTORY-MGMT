@@ -111,7 +111,7 @@ create table setting
 
 create procedure insertSystemUser @id int,@mode varchar(30),@pw varchar(30)
 as
-insert into setting
+insert into setting (id,mode,password)
 values (@id,@mode,CONVERT(varbinary,@pw))
 
 create procedure removeSystemUser @id int
@@ -119,4 +119,16 @@ as
 update setting
 set status=0
 where id = @id
+
+
+create procedure checkAuthUser @id int,@pw varchar(30)
+as
+select id
+from setting 
+where id=@id and password = CONVERT(varbinary,@pw) and status=1 and mode='user'
+
+exec insertSystemUser 777,'admin','ntu'
+exec insertSystemUser 111,'user','haris'
+
+exec checkAuthUser 111,'haris'
 
