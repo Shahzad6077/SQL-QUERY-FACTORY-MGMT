@@ -1,4 +1,4 @@
---create database FactoryManagement
+create database FactoryManagement
 
 ---------- WORKERS Sections -------
 
@@ -76,7 +76,7 @@ create table STOCK
 	Constraint STOCK_ChkPrice Check(pricePerUnit > 0)
 )
 
-	
+-------------PURCHASE TABLE--------------------------------
 
 create table PURCHASE_STOCK
 (
@@ -96,7 +96,7 @@ create table PURCHASE_STOCK
 )
 
 
-
+---------------------------SETTING TABLE----------------
 create table setting 
 (
 	id int,
@@ -107,13 +107,15 @@ create table setting
 )
 
 
-
+----------------------INSERT SETTING PROC-------------------------
 
 create procedure insertSystemUser @id int,@mode varchar(30),@pw varchar(30)
 as
 insert into setting (id,mode,password)
 values (@id,@mode,CONVERT(varbinary,@pw))
 
+
+----------------------REMOVE SETTING ORIC------------------------
 create procedure removeSystemUser @id int
 as
 update setting
@@ -121,14 +123,35 @@ set status=0
 where id = @id
 
 
+--------------------------AUTHENTICATION POROC----------------------------
 create procedure checkAuthUser @id int,@pw varchar(30)
 as
 select id
 from setting 
 where id=@id and password = CONVERT(varbinary,@pw) and status=1 and mode='user'
 
-exec insertSystemUser 777,'admin','ntu'
-exec insertSystemUser 111,'user','haris'
 
-exec checkAuthUser 111,'haris'
 
+
+													exec insertSystemUser 777,'admin','ntu'
+													exec insertSystemUser 111,'user','haris'
+
+													exec checkAuthUser 111,'haris'
+
+-------------------------------Sales Table--------------------------------------
+CREATE TABLE SALES
+(
+	saleTime time default convert(time, getDate()),
+	saleDate date default convert(date, getDate()),
+	itemName VARCHAR(60) NOT  NULL,
+	quantity INT NOT NULL,
+	buyerName VARCHAR(60) NOT NULL,
+	price INT NOT NULL,
+	delivered INT,
+	remaining INT
+)
+
+CREATE PROCEDURE addSales @name varchar(60), @quantity int, @buyer varchar(60), @price int , @delivered int,@remain int
+AS
+INSERT INTO SALES (itemName, quantity, buyerName, price, delivered , remaining)
+VALUES (@name,@quantity,@buyer, @price, @delivered , @remain)
