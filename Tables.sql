@@ -97,3 +97,26 @@ create table PURCHASE_STOCK
 
 
 
+create table setting 
+(
+	id int,
+	mode varChar(30),
+	password varBinary(1000) Not Null,
+	status bit default 1,
+	constraint setting_pk primary key (id)
+)
+
+
+
+
+create procedure insertSystemUser @id int,@mode varchar(30),@pw varchar(30)
+as
+insert into setting
+values (@id,@mode,CONVERT(varbinary,@pw))
+
+create procedure removeSystemUser @id int
+as
+update setting
+set status=0
+where id = @id
+
