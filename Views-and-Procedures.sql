@@ -107,14 +107,14 @@ where W.Status = 1
 
 */
 CREATE PROCEDURE newStock @NAME VARCHAR(30),@QTY FLOAT, @UNIT VARCHAR(10),@PRICE FLOAT,
-				@buyfrom varchar(30),@adress varchar(50),@phone varchar(30),@comment varchar(100)
+				@buyfrom varchar(30)
 as
 INSERT INTO STOCK (itemName,qty,unit,pricePerUnit)
 values (@NAME,@QTY,@UNIT,@PRICE)
 declare @idOrig int;
 select @idOrig=  IDENT_CURRENT( 'STOCK' );
-insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,pAddress,phoneNo,comment)
-values (@idOrig,@QTY,@PRICE,@buyfrom,@adress,@phone,@comment)
+insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom)
+values (@idOrig,@QTY,@PRICE,@buyfrom)
 
 -----------------------------------------------
 ---- THIS IS FOR WHEN RECORD IS ALREADY CREATED BEFORE -----
@@ -127,14 +127,14 @@ values (@idOrig,@QTY,@PRICE,@buyfrom,@adress,@phone,@comment)
 
 */
 create procedure newStockWithUpdate @id int,@NAME VARCHAR(30),@QTY FLOAT, @UNIT VARCHAR(10),@PRICE FLOAT,
-				@buyfrom varchar(30),@adress varchar(50),@phone varchar(30),@comment varchar(100)
+				@buyfrom varchar(30)
 as
 update STOCK
 set qty= qty+@QTY,pricePerUnit=@PRICE
 where itemId= @id
 
-insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,pAddress,phoneNo,comment)
-values (@id,@QTY,@PRICE,@buyfrom,@adress,@phone,@comment)
+insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom)
+values (@id,@QTY,@PRICE,@buyfrom)
 
 -----------------------------------------------------
 
