@@ -141,6 +141,7 @@ where id=@id and password = CONVERT(varbinary,@pw) and status=1 and mode='user'
 -------------------------------Sales Table--------------------------------------
 CREATE TABLE SALES
 (
+	saleId int identity(1,1),
 	saleTime time default convert(time, getDate()),
 	saleDate date default convert(date, getDate()),
 	itemName VARCHAR(60) NOT  NULL,
@@ -148,7 +149,8 @@ CREATE TABLE SALES
 	buyerName VARCHAR(60) NOT NULL,
 	price INT NOT NULL,
 	delivered INT,
-	remaining INT
+	remaining INT,
+	constraint sale_pk primary key saleId
 )
 
 CREATE PROCEDURE addSales @name varchar(60), @quantity int, @buyer varchar(60), @price int , @delivered int,@remain int
