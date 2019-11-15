@@ -86,6 +86,7 @@ create table PURCHASE_STOCK
 	qty float,
 	pricePerUnit FLOAT ,
 	purchaseFrom varchar(30) default 'Not Provided',
+	pType varchar(30) , --add or utilized
 	--pAddress varchar(50) default 'Not Provided',
 	--phoneNo varchar(30) default 'Not Provided',
 	--comment varchar(100) default '',
@@ -157,3 +158,6 @@ CREATE PROCEDURE addSales @name varchar(60), @quantity int, @buyer varchar(60), 
 AS
 INSERT INTO SALES (itemName, quantity, buyerName, price, delivered , remaining)
 VALUES (@name,@quantity,@buyer, @price, @delivered , @remain)
+
+
+

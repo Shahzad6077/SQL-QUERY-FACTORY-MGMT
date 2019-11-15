@@ -113,8 +113,9 @@ INSERT INTO STOCK (itemName,qty,unit,pricePerUnit)
 values (@NAME,@QTY,@UNIT,@PRICE)
 declare @idOrig int;
 select @idOrig=  IDENT_CURRENT( 'STOCK' );
-insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom)
-values (@idOrig,@QTY,@PRICE,@buyfrom)
+insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,pType)
+values (@idOrig,@QTY,@PRICE,@buyfrom,'add')
+
 
 -----------------------------------------------
 ---- THIS IS FOR WHEN RECORD IS ALREADY CREATED BEFORE -----
@@ -126,17 +127,54 @@ values (@idOrig,@QTY,@PRICE,@buyfrom)
 	ye Stock ki qty ko update b kr dy ga or purchase wly table mai jaa kr humry pas record b rah jay ga 
 
 */
-create procedure newStockWithUpdate @id int,@NAME VARCHAR(30),@QTY FLOAT, @UNIT VARCHAR(10),@PRICE FLOAT,
+create procedure newStockWithUpdate @id int,@QTY FLOAT, @UNIT VARCHAR(10),@PRICE FLOAT,
 				@buyfrom varchar(30)
 as
 update STOCK
 set qty= qty+@QTY,pricePerUnit=@PRICE
 where itemId= @id
 
-insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom)
-values (@id,@QTY,@PRICE,@buyfrom)
+insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,pType)
+values (@id,@QTY,@PRICE,@buyfrom,'add')
+
 
 -----------------------------------------------------
+
+
+/*
+	ye procedure utilized sy phly run krk result check krna age row greater than 0 ai hain to thek hai utilize wla proc chalana other wise
+	jitni qty pari us sy zyada utlize ka error show krwa dna
+*/
+create procedure checkBeforeUtilized @id int,@QTY FLOAT
+as
+select * 
+from STOCK
+where itemId= @id and @QTY <=qty
+ 
+-----Utilized Stock item procedure-----
+create procedure stockUtilized @id int,@QTY FLOAT
+as
+update STOCK
+set qty= qty-@QTY
+where itemId= @id
+insert into PURCHASE_STOCK (itemId,qty,pType)
+values (@id,@QTY,'utilized')
+
+-------------------- TESTING QUERY --------------
+
+
+exec newStock 'Sugar',20,'kg',400,'AK mill'
+
+exec newStockWithUpdate 1,5,'kg',200,'Zone mill'
+
+exec checkBeforeUtilized 1,30
+exec stockUtilized 1,21
+
+
+select * 
+from STOCK
+select * 
+from PURCHASE_STOCK
 
 ---- DELETE THE STOCK -----
 /*
