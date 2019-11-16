@@ -58,12 +58,26 @@ VALUES (@wID,@payment,@detail) ;
 
 ----------------ADD BALANCE_WITHDRAW PROCEDURE---------------
 
-
-
 CREATE PROCEDURE newWithdraw @wID  int, @amount int
 AS
+declare @checkBalance int;
+select @checkBalance = Balance
+from WORKER where WID = @wID
+IF (@amount <= @checkBalance)
+BEGIN
+	INSERT INTO BALANCE_WITHDRAW (WID,amount)
+	VALUES (@wID,@amount) 
+	update WORKER
+	set Balance= Balance-@amount
+	where WID= @wID
+END
+
+
+/*
+CREATEdrop PROCEDURE newWithdraw @wID  int, @amount int
+AS
 INSERT INTO BALANCE_WITHDRAW (WID,amount)
-VALUES (@wID,@amount) 
+VALUES (@wID,@amount) */
 ------------------------------------------------------
 
 
@@ -71,11 +85,9 @@ VALUES (@wID,@amount)
 ------------- get list of daily wages(work done)----------
 Create view DAILY_WAGES_VIEW
 AS
-select W.WID,W.WorkerID,W.WorkerName,WD.Detail,WD.Daily_Payment,WD.createdDate
-from WORKER W inner join WORK_DONE WD on W.WID = WD.WID
-where W.Status = 1
-
-																				select * from DAILY_WAGES_VIEW
+select W.WID,W.WorkerID,W.WorkerName,WD.Detail,WD.Daily_Payment,BW.amount,WD.createdDate
+from WORKER W FULL OUTER JOIN WORK_DONE WD ON W.WID = WD.WID FULL OUTER JOIN BALANCE_WITHDRAW BW ON BW.WID= WD.WID
+WHERE W.Status = 1		
 
 /*
 Exec insertWorkDone 27,30,'p123 LHR'
@@ -106,17 +118,21 @@ where W.Status = 1
 	this will automatically create a purchasing record or add the record in STOCK table 
 
 */
-CREATE PROCEDURE newStock @NAME VARCHAR(30),@QTY FLOAT, @UNIT VARCHAR(10),@PRICE FLOAT,
-				@buyfrom varchar(30)
+CREATE PROCEDURE newStock @NAME VARCHAR(30),@QTY FLOAT, @UNIT VARCHAR(10),@PRICE FLOAT , @buyfrom Varchar(30)
 as
 INSERT INTO STOCK (itemName,qty,unit,pricePerUnit)
 values (@NAME,@QTY,@UNIT,@PRICE)
 declare @idOrig int;
 select @idOrig=  IDENT_CURRENT( 'STOCK' );
-insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,pType)
-values (@idOrig,@QTY,@PRICE,@buyfrom,'add')
+insert into PURCHASE_STOCK (itemId,qty,pricePerUnit, pType , purchaseFrom)
+values (@idOrig,@QTY,@PRICE,'add' , @buyfrom)
 
+CREATE VIEW stockPurchase
+AS
+SELECT P.createdDate, S.itemId ,S.itemName,S.qty,S.unit , S.pricePerUnit , P.purchaseFrom
+FROM STOCK S, PURCHASE_STOCK P
 
+SELECT * FROM stockPurchase
 -----------------------------------------------
 ---- THIS IS FOR WHEN RECORD IS ALREADY CREATED BEFORE -----
 /*

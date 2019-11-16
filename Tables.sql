@@ -52,7 +52,7 @@ CREATE TABLE BALANCE_WITHDRAW
 (
 	WID INT,
 	createdDate date default convert(date, getDate()),
-	amount int not Null,
+	amount int default 0,
 	createdTime varchar(30) default CONVERT(varchar(15),  CAST(GETDATE() AS TIME), 100),
 	createdAt date default getDate(),
 	Constraint BALANCE_WITHDRAW_pk PRIMARY KEY (createdDate,WID),
@@ -95,7 +95,6 @@ create table PURCHASE_STOCK
 	Constraint PURCHASE_STOCK_ChkQty Check(qty >0),
 	Constraint PURCHASE_STOCK_ChkPrice Check(pricePerUnit > 0),
 )
-
 
 ---------------------------SETTING TABLE----------------
 create table setting 
@@ -151,13 +150,11 @@ CREATE TABLE SALES
 	price INT NOT NULL,
 	delivered INT,
 	remaining INT,
-	constraint sale_pk primary key saleId
+	constraint sale_pk primary key (saleId)
 )
 
-CREATE PROCEDURE addSales @name varchar(60), @quantity int, @buyer varchar(60), @price int , @delivered int,@remain int
+CREATE PROCEDURE addSales @name varchar(60), @quantity int, @buyer varchar(60), @price int
 AS
-INSERT INTO SALES (itemName, quantity, buyerName, price, delivered , remaining)
-VALUES (@name,@quantity,@buyer, @price, @delivered , @remain)
-
-
+INSERT INTO SALES (itemName, quantity, buyerName, price)
+VALUES (@name,@quantity,@buyer, @price)
 
