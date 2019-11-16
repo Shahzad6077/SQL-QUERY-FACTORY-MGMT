@@ -158,3 +158,5 @@ AS
 INSERT INTO SALES (itemName, quantity, buyerName, price)
 VALUES (@name,@quantity,@buyer, @price)
 
+exec addSales 'haris',12,'ak mill',12000
+

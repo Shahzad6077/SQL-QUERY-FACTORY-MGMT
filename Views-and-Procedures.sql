@@ -85,10 +85,11 @@ VALUES (@wID,@amount) */
 ------------- get list of daily wages(work done)----------
 Create view DAILY_WAGES_VIEW
 AS
-select W.WID,W.WorkerID,W.WorkerName,WD.Detail,WD.Daily_Payment,BW.amount,WD.createdDate
-from WORKER W FULL OUTER JOIN WORK_DONE WD ON W.WID = WD.WID FULL OUTER JOIN BALANCE_WITHDRAW BW ON BW.WID= WD.WID
+select W.WID,W.WorkerID,W.WorkerName,WD.Detail,WD.Daily_Payment,BW.amount,WD.createdDate,W.Balance
+from WORKER W FULL OUTER JOIN WORK_DONE WD ON W.WID = WD.WID FULL OUTER JOIN BALANCE_WITHDRAW BW ON BW.WID= WD.WID 
 WHERE W.Status = 1		
 
+select WID,WorkerName,Detail,Daily_Payment,createdDate,Balance from DAILY_WAGES_VIEW where createdDate like '2019-11-%'
 /*
 Exec insertWorkDone 27,30,'p123 LHR'
 EXEC WorkBalance 27,30
@@ -186,10 +187,6 @@ exec newStockWithUpdate 1,5,'kg',200,'Zone mill'
 exec checkBeforeUtilized 1,1
 exec stockUtilized 1,1
 
-select * 
-from STOCK
-select * 
-from PURCHASE_STOCK
 
 ---- DELETE THE STOCK -----
 /*
@@ -211,3 +208,29 @@ as
 update STOCK
 set itemName= @name
 where itemId= @id
+
+
+Create view STOCK_REPORT_VIEW
+AS
+select itemId,itemName,qty,pricePerUnit 
+from STOCK
+where active = 1
+
+
+select * from STOCK_REPORT_VIEW
+
+Create view PURCHASE_REPORT_VIEW
+AS
+select PS.itemId, S.itemName,PS.qty ,PS.purchaseFrom,createdDate,pType
+from PURCHASE_STOCK PS INNER JOIN STOCK S ON PS.itemId = S.itemId
+WHERE active = 1 
+
+select * from PURCHASE_REPORT_VIEW where createdDate like '2019-10-%' or pType = 'add'
+
+create view SALE_REPORT
+as
+select saleId,itemName,quantity,price,buyerName,saleDate
+from SALES
+
+
+select * from SALE_REPORT where saleDate like '2019-10-%'
