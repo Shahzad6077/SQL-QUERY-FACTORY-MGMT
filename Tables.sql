@@ -72,13 +72,13 @@ create table STOCK
 	pricePerUnit FLOAT,
 	active bit default 1,
 	Constraint STOCK_pk Primary key (itemId),
-	Constraint STOCK_ChkQty Check(qty >0),
+	--Constraint STOCK_ChkQty Check(qty >0),
 	Constraint STOCK_ChkPrice Check(pricePerUnit > 0)
 )
 
 -------------PURCHASE TABLE--------------------------------
 
-create table PURCHASE_STOCK
+create table  PURCHASE_STOCK
 (
 	itemId int,
 	createdTime time default convert(time, getDate()),
@@ -92,7 +92,7 @@ create table PURCHASE_STOCK
 	--comment varchar(100) default '',
 	Constraint PURCHASE_STOCK_pk Primary key (itemId,createdTime,createdDate) ,
 	Constraint STOCK_fk foreign key (itemId) references STOCK(itemId) on update cascade ,
-	Constraint PURCHASE_STOCK_ChkQty Check(qty >0),
+	--Constraint PURCHASE_STOCK_ChkQty Check(qty >0),
 	Constraint PURCHASE_STOCK_ChkPrice Check(pricePerUnit > 0),
 )
 

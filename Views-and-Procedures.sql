@@ -147,13 +147,13 @@ create procedure newStockWithUpdate @id int,@QTY FLOAT, @UNIT VARCHAR(10),@PRICE
 				@buyfrom varchar(30)
 as
 update STOCK
-set qty= qty+@QTY,pricePerUnit=@PRICE
+set qty+=@QTY,pricePerUnit=@PRICE
 where itemId= @id
 
 insert into PURCHASE_STOCK (itemId,qty,pricePerUnit,purchaseFrom,pType)
 values (@id,@QTY,@PRICE,@buyfrom,'add')
 
-
+exec newStockWithUpdate 1,10,'kg',1011,'intense'
 -----------------------------------------------------
 
 
@@ -183,9 +183,8 @@ exec newStock 'Sugar',20,'kg',400,'AK mill'
 
 exec newStockWithUpdate 1,5,'kg',200,'Zone mill'
 
-exec checkBeforeUtilized 1,30
-exec stockUtilized 1,21
-
+exec checkBeforeUtilized 1,1
+exec stockUtilized 1,1
 
 select * 
 from STOCK
